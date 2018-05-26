@@ -7,9 +7,15 @@ package uas_softcom1;
 
 import java.awt.Desktop;
 import java.io.File;
+import java.io.FileFilter;
+import java.io.FileNotFoundException;
 import java.io.IOException;
+import java.io.InputStream;
+import java.io.InputStreamReader;
+import java.util.Scanner;
 import java.util.logging.Level;
 import java.util.logging.Logger;
+import javax.swing.JFileChooser;
 
 /**
  *
@@ -52,13 +58,13 @@ public class FrameHome extends javax.swing.JFrame {
         jSpinnerOutputNeuron = new javax.swing.JSpinner();
         jLabel4 = new javax.swing.JLabel();
         jSpinnerLearningRate = new javax.swing.JSpinner();
-        jToggleButton1 = new javax.swing.JToggleButton();
-        jToggleButton2 = new javax.swing.JToggleButton();
         jLabel5 = new javax.swing.JLabel();
         jSpinnerIteration = new javax.swing.JSpinner();
         jTextFieldTrainInput = new javax.swing.JTextField();
         jTextFieldTrainOutput = new javax.swing.JTextField();
         jButtonTrain = new javax.swing.JButton();
+        jButtonTrainInput = new javax.swing.JButton();
+        jButtonTrainOutput = new javax.swing.JButton();
 
         setDefaultCloseOperation(javax.swing.WindowConstants.EXIT_ON_CLOSE);
 
@@ -80,20 +86,6 @@ public class FrameHome extends javax.swing.JFrame {
 
         jSpinnerLearningRate.setModel(new javax.swing.SpinnerNumberModel(0, 0, null, 1));
 
-        jToggleButton1.setText("Train Input");
-        jToggleButton1.addActionListener(new java.awt.event.ActionListener() {
-            public void actionPerformed(java.awt.event.ActionEvent evt) {
-                jToggleButton1ActionPerformed(evt);
-            }
-        });
-
-        jToggleButton2.setText("Train Output");
-        jToggleButton2.addActionListener(new java.awt.event.ActionListener() {
-            public void actionPerformed(java.awt.event.ActionEvent evt) {
-                jToggleButton2ActionPerformed(evt);
-            }
-        });
-
         jLabel5.setText("Iteration");
 
         jSpinnerIteration.setModel(new javax.swing.SpinnerNumberModel(1, 1, null, 1));
@@ -109,41 +101,56 @@ public class FrameHome extends javax.swing.JFrame {
             }
         });
 
+        jButtonTrainInput.setText("Train Input");
+        jButtonTrainInput.addActionListener(new java.awt.event.ActionListener() {
+            public void actionPerformed(java.awt.event.ActionEvent evt) {
+                jButtonTrainInputActionPerformed(evt);
+            }
+        });
+
+        jButtonTrainOutput.setText("Train Output");
+
         javax.swing.GroupLayout jPanel1Layout = new javax.swing.GroupLayout(jPanel1);
         jPanel1.setLayout(jPanel1Layout);
         jPanel1Layout.setHorizontalGroup(
             jPanel1Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
             .addGroup(jPanel1Layout.createSequentialGroup()
-                .addContainerGap()
                 .addGroup(jPanel1Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
-                    .addComponent(jTextFieldTrainInput)
+                    .addGroup(jPanel1Layout.createSequentialGroup()
+                        .addContainerGap()
+                        .addGroup(jPanel1Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
+                            .addComponent(jTextFieldTrainInput)
+                            .addGroup(jPanel1Layout.createSequentialGroup()
+                                .addGroup(jPanel1Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
+                                    .addComponent(jLabel3)
+                                    .addComponent(jLabel4)
+                                    .addComponent(jLabel2)
+                                    .addComponent(jLabel1))
+                                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
+                                .addGroup(jPanel1Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING, false)
+                                    .addComponent(jSpinnerInputNeuron)
+                                    .addComponent(jSpinnerHiddenNeuron)
+                                    .addComponent(jSpinnerLearningRate, javax.swing.GroupLayout.DEFAULT_SIZE, 58, Short.MAX_VALUE)
+                                    .addComponent(jSpinnerOutputNeuron)))
+                            .addGroup(jPanel1Layout.createSequentialGroup()
+                                .addComponent(jLabel5)
+                                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
+                                .addComponent(jSpinnerIteration, javax.swing.GroupLayout.PREFERRED_SIZE, 58, javax.swing.GroupLayout.PREFERRED_SIZE))
+                            .addComponent(jTextFieldTrainOutput)))
                     .addGroup(jPanel1Layout.createSequentialGroup()
                         .addGroup(jPanel1Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
-                            .addComponent(jLabel3)
-                            .addComponent(jLabel4)
-                            .addComponent(jLabel2)
-                            .addComponent(jLabel1))
-                        .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
-                        .addGroup(jPanel1Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING, false)
-                            .addComponent(jSpinnerInputNeuron)
-                            .addComponent(jSpinnerHiddenNeuron)
-                            .addComponent(jSpinnerLearningRate, javax.swing.GroupLayout.DEFAULT_SIZE, 58, Short.MAX_VALUE)
-                            .addComponent(jSpinnerOutputNeuron)))
-                    .addGroup(jPanel1Layout.createSequentialGroup()
-                        .addComponent(jLabel5)
-                        .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
-                        .addComponent(jSpinnerIteration, javax.swing.GroupLayout.PREFERRED_SIZE, 58, javax.swing.GroupLayout.PREFERRED_SIZE))
-                    .addGroup(jPanel1Layout.createSequentialGroup()
-                        .addGroup(jPanel1Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
-                            .addComponent(jToggleButton1, javax.swing.GroupLayout.PREFERRED_SIZE, 93, javax.swing.GroupLayout.PREFERRED_SIZE)
-                            .addComponent(jToggleButton2))
-                        .addGap(0, 0, Short.MAX_VALUE))
-                    .addComponent(jTextFieldTrainOutput))
+                            .addGroup(jPanel1Layout.createSequentialGroup()
+                                .addGap(92, 92, 92)
+                                .addComponent(jButtonTrain))
+                            .addGroup(jPanel1Layout.createSequentialGroup()
+                                .addContainerGap()
+                                .addComponent(jButtonTrainOutput)))
+                        .addGap(0, 127, Short.MAX_VALUE)))
                 .addContainerGap())
             .addGroup(jPanel1Layout.createSequentialGroup()
-                .addGap(92, 92, 92)
-                .addComponent(jButtonTrain)
-                .addContainerGap(137, Short.MAX_VALUE))
+                .addContainerGap()
+                .addComponent(jButtonTrainInput)
+                .addContainerGap(javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE))
         );
         jPanel1Layout.setVerticalGroup(
             jPanel1Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
@@ -169,11 +176,11 @@ public class FrameHome extends javax.swing.JFrame {
                     .addComponent(jLabel5)
                     .addComponent(jSpinnerIteration, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE))
                 .addGap(27, 27, 27)
-                .addComponent(jToggleButton1)
+                .addComponent(jButtonTrainInput)
                 .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
                 .addComponent(jTextFieldTrainInput, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
                 .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
-                .addComponent(jToggleButton2)
+                .addComponent(jButtonTrainOutput)
                 .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
                 .addComponent(jTextFieldTrainOutput, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
                 .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED, 68, Short.MAX_VALUE)
@@ -197,34 +204,33 @@ public class FrameHome extends javax.swing.JFrame {
         pack();
     }// </editor-fold>//GEN-END:initComponents
 
-    private void jToggleButton1ActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_jToggleButton1ActionPerformed
-//        // TODO add your handling code here:
-//        File file = new File("E:\\Kuliah\\Readme.txt");
-//        
-//        //first check if Desktop is supported by Platform or not
-//        if(!Desktop.isDesktopSupported()){
-//            System.out.println("Desktop is not supported");
-//            return;
-//        }
-//        
-//        Desktop desktop = Desktop.getDesktop();
-//        if(file.exists()) try {
-//            desktop.open(file);
-//        } catch (IOException ex) {
-//            Logger.getLogger(FrameHome.class.getName()).log(Level.SEVERE, null, ex);
-//        }
-        
-        
-//        System.out.println(outputFile);
-    }//GEN-LAST:event_jToggleButton1ActionPerformed
-
-    private void jToggleButton2ActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_jToggleButton2ActionPerformed
-        // TODO add your handling code here:
-    }//GEN-LAST:event_jToggleButton2ActionPerformed
-
     private void jButtonTrainActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_jButtonTrainActionPerformed
         // TODO add your handling code here:
     }//GEN-LAST:event_jButtonTrainActionPerformed
+
+    private void jButtonTrainInputActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_jButtonTrainInputActionPerformed
+        // TODO add your handling code here:
+        JFileChooser jfc = new JFileChooser();
+        jfc.showOpenDialog(null);
+        File file = jfc.getSelectedFile();
+        String dir = file.getAbsolutePath();
+
+         try{
+             Scanner inputStream= new Scanner(file);
+             while(inputStream.hasNext()){
+             String data= inputStream.next();
+             String[] values = data.split(",");
+             System.out.println(values[1]);
+             }
+             inputStream.close();
+          }catch (FileNotFoundException e) {
+             e.printStackTrace();
+     }
+     //This prints out the working directory
+     System.out.println("Present Project Directory : "+ System.getProperty("user.dir"));
+
+          
+    }//GEN-LAST:event_jButtonTrainInputActionPerformed
 
     /**
      * @param args the command line arguments
@@ -263,6 +269,8 @@ public class FrameHome extends javax.swing.JFrame {
 
     // Variables declaration - do not modify//GEN-BEGIN:variables
     private javax.swing.JButton jButtonTrain;
+    private javax.swing.JButton jButtonTrainInput;
+    private javax.swing.JButton jButtonTrainOutput;
     private javax.swing.JLabel jLabel1;
     private javax.swing.JLabel jLabel2;
     private javax.swing.JLabel jLabel3;
@@ -276,7 +284,5 @@ public class FrameHome extends javax.swing.JFrame {
     private javax.swing.JSpinner jSpinnerOutputNeuron;
     private javax.swing.JTextField jTextFieldTrainInput;
     private javax.swing.JTextField jTextFieldTrainOutput;
-    private javax.swing.JToggleButton jToggleButton1;
-    private javax.swing.JToggleButton jToggleButton2;
     // End of variables declaration//GEN-END:variables
 }
