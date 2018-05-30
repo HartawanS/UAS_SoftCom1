@@ -24,35 +24,35 @@ import javax.swing.JFileChooser;
  */
 public class FrameTrain extends javax.swing.JDialog {
 
-    private static final int INPUT_NEURONS = 16;
-    private static final int HIDDEN_NEURONS = 10;
-    private static final int OUTPUT_NEURONS = 7;
+    private final int INPUT_NEURONS = 16;
+    private final int HIDDEN_NEURONS = 10;
+    private final int OUTPUT_NEURONS = 7;
+//
+    private final double LEARNING_RATE = 0.2;
+    private final int TRAINING_REPS = 6000;
 
-    private static final double LEARNING_RATE = 0.2;
-    private static final int TRAINING_REPS = 6000;
-
-    private static final double momentum = 0.0001;
-    
+    private final double momentum = 0.0001;
+//    
     // bobot pada hidden layer
-    private static double wih[][] = new double[INPUT_NEURONS + 1][HIDDEN_NEURONS];
-
+    private double wih[][] = new double[INPUT_NEURONS + 1][HIDDEN_NEURONS];
+//
     // bobot pada output layer
-    private static double who[][] = new double[HIDDEN_NEURONS + 1][OUTPUT_NEURONS];
-
-    private static double inputs[] = new double[INPUT_NEURONS];
-    private static double hidden[] = new double[HIDDEN_NEURONS];
-    private static double target[] = new double[OUTPUT_NEURONS];
-    private static double actual[] = new double[OUTPUT_NEURONS];
+    private double who[][] = new double[HIDDEN_NEURONS + 1][OUTPUT_NEURONS];
+//
+    private double inputs[] = new double[INPUT_NEURONS];
+    private double hidden[] = new double[HIDDEN_NEURONS];
+    private double target[] = new double[OUTPUT_NEURONS];
+    private double actual[] = new double[OUTPUT_NEURONS];
 
     // galat
-    private static double erro[] = new double[OUTPUT_NEURONS];
-    private static double errh[] = new double[HIDDEN_NEURONS];
+    private double erro[] = new double[OUTPUT_NEURONS];
+    private double errh[] = new double[HIDDEN_NEURONS];
 
-    private static final int MAX_SAMPLES = 101;
+    private final int MAX_SAMPLES = 214;
 
-    private static double trainInput[][] = new double[5000][INPUT_NEURONS];
+    private double trainInput[][] = new double[5000][INPUT_NEURONS];
     
-    private static int trainOutput[][] = new int[5000][OUTPUT_NEURONS];
+    private int trainOutput[][] = new int[5000][OUTPUT_NEURONS];
     /**
      * Creates new form FrameTrain
      */
@@ -184,12 +184,16 @@ public class FrameTrain extends javax.swing.JDialog {
 
     private void jButtonTrainActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_jButtonTrainActionPerformed
         // TODO add your handling code here:
-        NN();
-        FramePengujian pengujian = new FramePengujian();
-        pengujian.who = who;
-        pengujian.wih = wih;
-        pengujian.setVisible(true);
-        jButtonPengujian.setEnabled(true);
+        if(!jTextFieldTrainInput.equals("") || !jTextFieldTrainOutput.equals("")){
+            NN();
+            FramePengujian pengujian = new FramePengujian();
+            pengujian.who = who;
+            pengujian.wih = wih;
+            pengujian.setVisible(true);
+            jButtonPengujian.setEnabled(true);
+        }
+        
+        
     }//GEN-LAST:event_jButtonTrainActionPerformed
 
     private void jButtonTrainInputActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_jButtonTrainInputActionPerformed
@@ -234,9 +238,35 @@ public class FrameTrain extends javax.swing.JDialog {
 
     private void jButtonTrainOutputActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_jButtonTrainOutputActionPerformed
         // TODO add your handling code here:
+        JFileChooser jfc = new JFileChooser();
+        jfc.showOpenDialog(null);
+        File file = jfc.getSelectedFile();
+        String dir = file.getAbsolutePath();
+        String data;
+        String values[] = null;
+        try{
+            Scanner inputStream = new Scanner(file);
+            int j=0;
+            while(inputStream.hasNext()){
+                data= inputStream.next();
+                values = data.split(",");
+                for(int i=0; i<values.length; i++){
+                    trainOutput[j][i] = Integer.parseInt(values[i]);
+                    System.out.printf(trainOutput[j][i]+"\t");
+                }
+                System.out.println("");
+                j++;
+//                System.out.println(values[0]+"\t"+values[1]+"\t"+values[2]);
+            }
+            inputStream.close();
+        }catch (FileNotFoundException e) {
+            e.printStackTrace();
+        }
+        //This prints out the working directory
+        jTextFieldTrainOutput.setText(System.getProperty("user.dir"));
     }//GEN-LAST:event_jButtonTrainOutputActionPerformed
 
-    private static void assignRandomWeights() {
+    private void assignRandomWeights() {
       for (int inp = 0; inp <= INPUT_NEURONS; inp++) {
         for (int hid = 0; hid < HIDDEN_NEURONS; hid++) {
           // random bobot
@@ -253,7 +283,7 @@ public class FrameTrain extends javax.swing.JDialog {
 
     }
     
-    private static void feedForward() {
+    private void feedForward() {
       double sum = 0;
       // hitung input ke hidden
 
@@ -279,15 +309,15 @@ public class FrameTrain extends javax.swing.JDialog {
 
     }
     
-    private static double sigmoid(final double val) {
+    private double sigmoid(final double val) {
       return (1.0 / (1.0 + Math.exp(-val)));
     }
     
-    private static double sigmoidDerivative(final double val) {
+    private double sigmoidDerivative(final double val) {
       return (val * (1.0 - val));
     }
     
-    private static void backPropagate() {
+    private void backPropagate() {
       // hitung galat dari out terhadap actual
       for (int out = 0; out < OUTPUT_NEURONS; out++) {
         erro[out] = (target[out] - actual[out]) *
@@ -325,7 +355,7 @@ public class FrameTrain extends javax.swing.JDialog {
       return;
     }
     
-    private static void NN() {
+    private void NN() {
       int sample = 0;
 
       assignRandomWeights();
