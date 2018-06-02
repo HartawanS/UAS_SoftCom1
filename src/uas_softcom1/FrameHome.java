@@ -19,6 +19,8 @@ public class FrameHome extends javax.swing.JFrame {
      */
     public FrameHome() {
         initComponents();
+        this.setLocationRelativeTo(this);
+        this.setTitle("HDS Stresssss");
     }
 
     /**

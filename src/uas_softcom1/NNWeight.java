@@ -12,18 +12,25 @@ package uas_softcom1;
 public class NNWeight {
 
     /**
+     * @return the actual
+     */
+    public double[] getActual() {
+        return actual;
+    }
+
+    /**
      * @return the persen
      */
     public double getPersen() {
         return persen;
     }
 
-    private final int INPUT_NEURONS = 9;
+    private final int INPUT_NEURONS = 20;
     private final int HIDDEN_NEURONS = 10;
-    private final int OUTPUT_NEURONS = 7;
+    private final int OUTPUT_NEURONS = 2;
 
     private final double LEARNING_RATE = 0.2;
-    private final int TRAINING_REPS = 6000;
+    private int TRAINING_REPS;
 
     private final double momentum = 0.0001;
     
@@ -42,7 +49,7 @@ public class NNWeight {
     private double erro[] = new double[OUTPUT_NEURONS];
     private double errh[] = new double[HIDDEN_NEURONS];
 
-    private final int MAX_SAMPLES = 214;
+    private final int MAX_SAMPLES = 613;
 
     private double trainInput[][] = new double[5000][INPUT_NEURONS];
     
@@ -50,9 +57,10 @@ public class NNWeight {
     
     private double persen;
     
-    public NNWeight(double inputs[], double WIH[][], double WHO[][]) {
+    public NNWeight(double inputs[], double WIH[][], double WHO[][], int epoch) {
 //        inputs = new double[] {1,0,0,1,0,0,1,1,1,1,0,0,0.5,0,0,1,1};
-
+         inputs = inputs;
+        epoch = this.TRAINING_REPS;
         WHO = this.who;
         WIH = this.wih;
         feedForward();
@@ -64,7 +72,6 @@ public class NNWeight {
 
         testNetworkTraining();
         getTrainingStats();
-        return ;
     }
     
     private void getTrainingStats()
@@ -84,11 +91,11 @@ public class NNWeight {
 
             feedForward();
 
-            if(maximum(actual) == maximum(target)){
+            if(maximum(getActual()) == maximum(target)){
                 sum += 1;
             }else{
                 //System.out.println(inputs[0] + "\t" + inputs[1] + "\t" + inputs[2] + "\t" + inputs[3]);
-              System.out.println(maximum(actual) + "\t" + maximum(target));
+              System.out.println(maximum(getActual()) + "\t" + maximum(target));
             }
         } // i
         persen = ((double)sum / (double)MAX_SAMPLES * 100.0);
@@ -156,7 +163,7 @@ public class NNWeight {
                 //System.out.print(inputs[j] + "\t");
             } // j
 
-            System.out.print("Output: " + (maximum(actual)+1) + "\n");
+            System.out.print("Output: " + (maximum(getActual())+1) + "\n");
         } // i
 
         return;
@@ -169,5 +176,12 @@ public class NNWeight {
         }
         System.out.println();
       }
+    }
+
+    /**
+     * @return the TRAINING_REPS
+     */
+    public int getTRAINING_REPS() {
+        return TRAINING_REPS;
     }
 }

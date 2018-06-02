@@ -24,12 +24,12 @@ import javax.swing.JFileChooser;
  */
 public class FrameTrain extends javax.swing.JDialog {
 
-    private final int INPUT_NEURONS = 16;
+    private final int INPUT_NEURONS = 20;
     private final int HIDDEN_NEURONS = 10;
-    private final int OUTPUT_NEURONS = 7;
+    private final int OUTPUT_NEURONS = 2;
 //
     private final double LEARNING_RATE = 0.2;
-    private final int TRAINING_REPS = 6000;
+    private int TRAINING_REPS;
 
     private final double momentum = 0.0001;
 //    
@@ -48,9 +48,9 @@ public class FrameTrain extends javax.swing.JDialog {
     private double erro[] = new double[OUTPUT_NEURONS];
     private double errh[] = new double[HIDDEN_NEURONS];
 
-    private final int MAX_SAMPLES = 214;
+    private final int MAX_SAMPLES = 613;
 
-    private double trainInput[][] = new double[5000][INPUT_NEURONS];
+    private double trainInput[][] = new double[5000][INPUT_NEURONS+1];
     
     private int trainOutput[][] = new int[5000][OUTPUT_NEURONS];
     /**
@@ -58,6 +58,8 @@ public class FrameTrain extends javax.swing.JDialog {
      */
     public FrameTrain() {
         initComponents();
+        this.setLocationRelativeTo(this);
+        this.setTitle("HDS Stresssss");
     }
 
     /**
@@ -69,19 +71,19 @@ public class FrameTrain extends javax.swing.JDialog {
     // <editor-fold defaultstate="collapsed" desc="Generated Code">//GEN-BEGIN:initComponents
     private void initComponents() {
 
-        jLabel4 = new javax.swing.JLabel();
+        jLabelIterasi = new javax.swing.JLabel();
         jTextFieldTrainInput = new javax.swing.JTextField();
         jTextFieldTrainOutput = new javax.swing.JTextField();
         jButtonTrain = new javax.swing.JButton();
         jButtonTrainInput = new javax.swing.JButton();
         jButtonTrainOutput = new javax.swing.JButton();
-        jTextField1 = new javax.swing.JTextField();
+        jTextFieldIterasi = new javax.swing.JTextField();
         jLabel1 = new javax.swing.JLabel();
         jButtonPengujian = new javax.swing.JButton();
 
         setDefaultCloseOperation(javax.swing.WindowConstants.DISPOSE_ON_CLOSE);
 
-        jLabel4.setText("Learning Rate :");
+        jLabelIterasi.setText("Iterasi :");
 
         jTextFieldTrainInput.setEditable(false);
 
@@ -108,9 +110,9 @@ public class FrameTrain extends javax.swing.JDialog {
             }
         });
 
-        jTextField1.addKeyListener(new java.awt.event.KeyAdapter() {
+        jTextFieldIterasi.addKeyListener(new java.awt.event.KeyAdapter() {
             public void keyTyped(java.awt.event.KeyEvent evt) {
-                jTextField1KeyTyped(evt);
+                jTextFieldIterasiKeyTyped(evt);
             }
         });
 
@@ -135,9 +137,9 @@ public class FrameTrain extends javax.swing.JDialog {
                         .addContainerGap()
                         .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
                             .addGroup(javax.swing.GroupLayout.Alignment.TRAILING, layout.createSequentialGroup()
-                                .addComponent(jLabel4)
+                                .addComponent(jLabelIterasi)
                                 .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
-                                .addComponent(jTextField1, javax.swing.GroupLayout.PREFERRED_SIZE, 237, javax.swing.GroupLayout.PREFERRED_SIZE))
+                                .addComponent(jTextFieldIterasi, javax.swing.GroupLayout.PREFERRED_SIZE, 237, javax.swing.GroupLayout.PREFERRED_SIZE))
                             .addGroup(layout.createSequentialGroup()
                                 .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.TRAILING, false)
                                     .addComponent(jButtonTrainOutput, javax.swing.GroupLayout.DEFAULT_SIZE, 97, Short.MAX_VALUE)
@@ -163,8 +165,8 @@ public class FrameTrain extends javax.swing.JDialog {
                         .addComponent(jLabel1, javax.swing.GroupLayout.PREFERRED_SIZE, 37, javax.swing.GroupLayout.PREFERRED_SIZE)
                         .addGap(28, 28, 28)
                         .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
-                            .addComponent(jLabel4)
-                            .addComponent(jTextField1, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE))
+                            .addComponent(jLabelIterasi)
+                            .addComponent(jTextFieldIterasi, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE))
                         .addGap(18, 18, 18)
                         .addComponent(jButtonTrainInput))
                     .addComponent(jTextFieldTrainInput, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE))
@@ -184,11 +186,13 @@ public class FrameTrain extends javax.swing.JDialog {
 
     private void jButtonTrainActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_jButtonTrainActionPerformed
         // TODO add your handling code here:
-        if(!jTextFieldTrainInput.equals("") || !jTextFieldTrainOutput.equals("")){
+//        System.out.println(jTextFieldIterasi.getText());
+        if(!jTextFieldIterasi.getText().equals("") && !jTextFieldTrainInput.getText().equals("") && !jTextFieldTrainOutput.getText().equals("")){
             NN();
             FramePengujian pengujian = new FramePengujian();
             pengujian.who = who;
             pengujian.wih = wih;
+            pengujian.epoch = Integer.parseInt(jTextFieldIterasi.getText());
             pengujian.setVisible(true);
             jButtonPengujian.setEnabled(true);
         }
@@ -211,8 +215,11 @@ public class FrameTrain extends javax.swing.JDialog {
                 data= inputStream.next();
                 values = data.split(",");
                 for(int i=0; i<values.length; i++){
-                    trainInput[j][i] = Double.parseDouble(values[i]);
-                    System.out.printf(trainInput[j][i]+"\t");
+                    try{
+                        trainInput[j][i] = Double.parseDouble(values[i]+"");
+                        System.out.printf(values[i]+"\t");
+                    }catch(NumberFormatException ex){ // handle your exception
+                    }
                 }
                 System.out.println("");
                 j++;
@@ -228,13 +235,13 @@ public class FrameTrain extends javax.swing.JDialog {
         
     }//GEN-LAST:event_jButtonTrainInputActionPerformed
 
-    private void jTextField1KeyTyped(java.awt.event.KeyEvent evt) {//GEN-FIRST:event_jTextField1KeyTyped
+    private void jTextFieldIterasiKeyTyped(java.awt.event.KeyEvent evt) {//GEN-FIRST:event_jTextFieldIterasiKeyTyped
         // TODO add your handling code here:
         char c = evt.getKeyChar();
         if(Character.isLetter(c) & ! evt.isAltDown()){
             evt.consume();
         }
-    }//GEN-LAST:event_jTextField1KeyTyped
+    }//GEN-LAST:event_jTextFieldIterasiKeyTyped
 
     private void jButtonTrainOutputActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_jButtonTrainOutputActionPerformed
         // TODO add your handling code here:
@@ -251,8 +258,11 @@ public class FrameTrain extends javax.swing.JDialog {
                 data= inputStream.next();
                 values = data.split(",");
                 for(int i=0; i<values.length; i++){
-                    trainOutput[j][i] = Integer.parseInt(values[i]);
-                    System.out.printf(trainOutput[j][i]+"\t");
+                    try{
+                        trainOutput[j][i] = Integer.parseInt(values[i]);
+                        System.out.printf(trainOutput[j][i]+"\t");
+                    } catch(NumberFormatException ex){ // handle your exception
+                    }
                 }
                 System.out.println("");
                 j++;
@@ -440,8 +450,8 @@ public class FrameTrain extends javax.swing.JDialog {
     private javax.swing.JButton jButtonTrainInput;
     private javax.swing.JButton jButtonTrainOutput;
     private javax.swing.JLabel jLabel1;
-    private javax.swing.JLabel jLabel4;
-    private javax.swing.JTextField jTextField1;
+    private javax.swing.JLabel jLabelIterasi;
+    private javax.swing.JTextField jTextFieldIterasi;
     private javax.swing.JTextField jTextFieldTrainInput;
     private javax.swing.JTextField jTextFieldTrainOutput;
     // End of variables declaration//GEN-END:variables
